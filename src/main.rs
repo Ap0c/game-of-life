@@ -55,13 +55,37 @@ mod test {
 	use super::Status::*;
 	use super::alive_or_dead;
 
-    #[test]
-    // Checks that a cell is dead if not enough of the surroundings are alive.
-    fn not_enough() {
+	#[test]
+	// Checks that a cell is dead if not enough of the surroundings are alive.
+	fn not_enough() {
 
-    	let surroundings = [Alive, Dead, Dead, Dead, Dead, Dead, Dead, Dead];
-    	assert_eq!(Dead, alive_or_dead(surroundings));
+		let mut surroundings = [Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead];
+		assert_eq!(Dead, alive_or_dead(surroundings));
 
-    }
+		surroundings = [Alive, Dead, Dead, Dead, Dead, Dead, Dead, Dead];
+		assert_eq!(Dead, alive_or_dead(surroundings));
+
+	}
+
+	#[test]
+	// Checks that a cell is alive if the conditions are right.
+	fn just_right() {
+
+		let mut surroundings = [Alive, Alive, Dead, Dead, Dead, Dead, Dead, Dead];
+		assert_eq!(Alive, alive_or_dead(surroundings));
+
+		surroundings = [Alive, Alive, Alive, Dead, Dead, Dead, Dead, Dead];
+		assert_eq!(Alive, alive_or_dead(surroundings));
+
+	}
+
+	#[test]
+	// Checks that a cell is alive if the conditions are right.
+	fn too_much() {
+
+		let surroundings = [Alive, Alive, Alive, Alive, Dead, Dead, Dead, Dead];
+		assert_eq!(Dead, alive_or_dead(surroundings));
+
+	}
 
 }
