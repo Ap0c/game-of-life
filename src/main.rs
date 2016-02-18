@@ -29,7 +29,7 @@ use Status::*;
 // Checks the surrounding cells and returns the current cell's status.
 fn alive_or_dead(surroundings: [Status; 8]) -> Status {
 
-	let sum = surroundings.iter().fold(0, |sum, cell| sum + cell.as_number());
+	let sum = surroundings.iter().filter(|cell| **cell == Alive).count();
 
 	match sum {
 		2 | 3 => Alive,
@@ -80,7 +80,7 @@ mod test {
 	}
 
 	#[test]
-	// Checks that a cell is alive if the conditions are right.
+	// Checks that a cell is dead if too much of the surroundings are alive.
 	fn too_much() {
 
 		let surroundings = [Alive, Alive, Alive, Alive, Dead, Dead, Dead, Dead];
