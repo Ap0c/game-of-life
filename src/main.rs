@@ -7,12 +7,17 @@ const NO_ROWS: usize = 5;
 // The status of a cell.
 #[derive(PartialEq)]
 #[derive(Debug)]
+#[derive(Copy)]
+#[derive(Clone)]
 enum Status {
 	Alive = 1,
 	Dead = 0
 }
 
 use Status::*;
+
+// Defines the type Board as a 2D array of Status.
+type Board = [[Status; NO_COLS]; NO_ROWS];
 
 
 // ----- Functions ----- //
@@ -31,8 +36,7 @@ fn alive_or_dead(surroundings: &[&Status; 8]) -> Status {
 
 // Figures out what the surrounding cells are and returns the current cell's
 // status.
-fn update_status(board: &[[Status; NO_COLS]; NO_COLS], row: usize, col: usize)
-	-> Status {
+fn update_status(board: &Board, row: usize, col: usize) -> Status {
 
 	let left_col = if col > 0 { col - 1 } else { NO_COLS - 1 };
 	let right_col = if col < NO_COLS - 1 { col + 1 } else { 0 };
@@ -52,12 +56,27 @@ fn update_status(board: &[[Status; NO_COLS]; NO_COLS], row: usize, col: usize)
 
 }
 
+// Updates the full board.
+fn update_board(board: &Board) -> Board {
+
+	let mut new_board: Board = [[Dead; NO_COLS]; NO_ROWS];
+
+	for row in 0..NO_ROWS {
+		for col in 0..NO_COLS {
+			new_board[row][col] = update_status(board, row, col);
+		}
+	}
+
+	new_board
+
+}
+
 
 // ----- Main ----- //
 
 fn main() {
 
-	let board = [
+	let mut board = [
 		[Dead, Dead, Dead, Dead, Dead],
 		[Dead, Alive, Alive, Dead, Dead],
 		[Dead, Alive, Alive, Dead, Dead],
@@ -65,8 +84,7 @@ fn main() {
 		[Dead, Dead, Dead, Dead, Dead]
 	];
 
-	let status = update_status(&board, 1, 0);
-	println!("{:?}", status);
+	board = update_board(&board);
 
 }
 
