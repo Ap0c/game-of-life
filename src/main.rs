@@ -17,8 +17,10 @@ const W_WIDTH: u32 = 640;
 const W_HEIGHT: u32 = 640;
 
 // Size of a cell rectangle.
-const RECT_WIDTH: f64 = W_WIDTH as f64 / NO_COLS as f64;
-const RECT_HEIGHT: f64 = W_HEIGHT as f64 / NO_ROWS as f64;
+const CELL_WIDTH: f64 = W_WIDTH as f64 / NO_COLS as f64;
+const CELL_HEIGHT: f64 = W_HEIGHT as f64 / NO_ROWS as f64;
+const RECT_WIDTH: f64 = CELL_WIDTH - 2.0;
+const RECT_HEIGHT: f64 = CELL_HEIGHT - 2.0;
 
 // Framerate.
 const FPS: u64 = 2;
@@ -125,6 +127,27 @@ fn random_board() -> Board {
 
 }
 
+// Draws board on screen.
+fn draw_board(board: Board, context: Context, graphics: &mut G2d) {
+
+	for row in 0..NO_ROWS {
+		for col in 0..NO_COLS {
+
+			if board[row][col] == Alive {
+
+				let x = (row as f64 * CELL_WIDTH) + 1.0;
+				let y = (col as f64 * CELL_HEIGHT) + 1.0;
+
+				rectangle([1.0, 0.0, 0.0, 1.0], [x, y, RECT_WIDTH, RECT_HEIGHT],
+					context.transform, graphics);
+
+			}
+			
+		}
+	}
+
+}
+
 
 // ----- Main ----- //
 
@@ -141,19 +164,8 @@ fn main() {
 		e.draw_2d(|c, g| {
 
 			clear([0.0; 4], g);
-			println!("new frame");
-			for row in 0..NO_ROWS {
-				for col in 0..NO_COLS {
-					if board[row][col] == Alive {
-						let x = (row as f64 * RECT_WIDTH) + 1.0;
-						let y = (col as f64 * RECT_HEIGHT) + 1.0;
-						rectangle([1.0, 0.0, 0.0, 1.0],
-							[x, y, RECT_WIDTH - 2.0, RECT_HEIGHT - 2.0],
-							c.transform, g);
-					}
-					
-				}
-			}
+			draw_board(board, c, g);
+			
 			board = update_board(&board);
 
 		});
