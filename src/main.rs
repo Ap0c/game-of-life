@@ -3,18 +3,22 @@
 extern crate piston_window;
 extern crate rand;
 use piston_window::*;
+use rand::{thread_rng, Rng};
 
 
 // ----- Setup ----- //
 
 // Size of the board.
-const NO_COLS: usize = 5;
-const NO_ROWS: usize = 5;
+const NO_COLS: usize = 60;
+const NO_ROWS: usize = 60;
 const W_WIDTH: u32 = 640;
 const W_HEIGHT: u32 = 640;
 const RECT_WIDTH: f64 = W_WIDTH as f64 / NO_COLS as f64;
 const RECT_HEIGHT: f64 = W_HEIGHT as f64 / NO_ROWS as f64;
 const FPS: u64 = 2;
+// Ratio of dead-to-alive, e.g. if the ratio is 10, 1 in 10 cells will start
+// off alive.
+const STATUS_RATIO: u8 = 20;
 
 // The status of a cell.
 #[derive(PartialEq)]
@@ -27,20 +31,6 @@ enum Status {
 }
 
 use Status::*;
-
-impl rand::Rand for Status {
-
-	fn rand<R: rand::Rng>(rng: &mut R) -> Status {
-
-	    let number: u32 = rng.gen_range(0, 2);
-	    match number {
-	        1 => Alive,
-	        _ => Dead
-	    }
-
-	}
-
-}
 
 // Defines the type Board as a 2D array of Status.
 type Board = [[Status; NO_COLS]; NO_ROWS];
@@ -97,18 +87,42 @@ fn update_board(board: &Board) -> Board {
 
 }
 
+// Generates a random cell status.
+fn random_status() -> Status {
+
+	let mut rng = thread_rng();
+	let number: u8 = rng.gen_range(0, STATUS_RATIO);
+	
+	match number {
+		1 => Alive,
+		_ => Dead
+	}
+
+}
+
+// Randomly generates a board of alive or dead cells.
+fn random_board() -> Board {
+
+	let mut board: Board = [[Dead; NO_COLS]; NO_ROWS];
+
+	for row in 0..NO_ROWS {
+		for col in 0..NO_COLS {
+
+			board[row][col] = random_status();
+
+		}
+	}
+
+	board
+
+}
+
 
 // ----- Main ----- //
 
 fn main() {
 
-	let mut board = [
-		[Dead, Dead, Dead, Dead, Dead],
-		[Dead, Alive, Alive, Dead, Dead],
-		[Dead, Alive, Alive, Dead, Dead],
-		[Dead, Dead, Dead, Dead, Dead],
-		[Dead, Dead, Dead, Dead, Dead]
-	];
+	let mut board = random_board();
 
 	let window: PistonWindow =
 		WindowSettings::new("Game Of Life", [W_WIDTH, W_HEIGHT])
@@ -121,16 +135,16 @@ fn main() {
 			clear([0.0; 4], g);
 			println!("new frame");
 			for row in 0..NO_ROWS {
-			    for col in 0..NO_COLS {
-			    	if board[row][col] == Alive {
-			    		let x = (row as f64 * RECT_WIDTH) + 1.0;
-				    	let y = (col as f64 * RECT_HEIGHT) + 1.0;
-				    	rectangle([1.0, 0.0, 0.0, 1.0],
-				    		[x, y, RECT_WIDTH - 2.0, RECT_HEIGHT - 2.0],
+				for col in 0..NO_COLS {
+					if board[row][col] == Alive {
+						let x = (row as f64 * RECT_WIDTH) + 1.0;
+						let y = (col as f64 * RECT_HEIGHT) + 1.0;
+						rectangle([1.0, 0.0, 0.0, 1.0],
+							[x, y, RECT_WIDTH - 2.0, RECT_HEIGHT - 2.0],
 							c.transform, g);
-			    	}
-			    	
-			    }
+					}
+					
+				}
 			}
 			board = update_board(&board);
 
@@ -193,7 +207,7 @@ mod test {
 	// Checks that a cell has been correctly marked as dead.
 	fn check_dead() {
 
-	    let board = [
+		let board = [
 			[Dead, Dead, Dead, Dead, Dead],
 			[Dead, Alive, Alive, Dead, Dead],
 			[Dead, Alive, Alive, Dead, Dead],
