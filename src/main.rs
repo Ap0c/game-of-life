@@ -78,37 +78,60 @@ mod test {
 
 	use super::Status::*;
 	use super::alive_or_dead;
+	use super::update_status;
 
 	#[test]
 	// Checks that a cell is dead if not enough of the surroundings are alive.
 	fn not_enough() {
 
-		let mut surroundings = [Dead, Dead, Dead, Dead, Dead, Dead, Dead, Dead];
-		assert_eq!(Dead, alive_or_dead(surroundings));
+		let board = [
+			[Dead, Dead, Dead, Dead, Dead],
+			[Dead, Alive, Alive, Dead, Dead],
+			[Dead, Alive, Alive, Dead, Dead],
+			[Dead, Dead, Dead, Dead, Dead],
+			[Dead, Dead, Dead, Dead, Dead]
+		];
 
-		surroundings = [Alive, Dead, Dead, Dead, Dead, Dead, Dead, Dead];
-		assert_eq!(Dead, alive_or_dead(surroundings));
+		let surroundings = [
+			&board[3][0], &board[3][1], &board[3][2], &board[4][0],
+			&board[4][2], &board[0][0], &board[0][1], &board[0][2]
+		];
 
-	}
-
-	#[test]
-	// Checks that a cell is alive if the conditions are right.
-	fn just_right() {
-
-		let mut surroundings = [Alive, Alive, Dead, Dead, Dead, Dead, Dead, Dead];
-		assert_eq!(Alive, alive_or_dead(surroundings));
-
-		surroundings = [Alive, Alive, Alive, Dead, Dead, Dead, Dead, Dead];
-		assert_eq!(Alive, alive_or_dead(surroundings));
+		assert_eq!(Dead, alive_or_dead(&surroundings));
 
 	}
 
 	#[test]
-	// Checks that a cell is dead if too much of the surroundings are alive.
-	fn too_much() {
+	// Checks that a cell has been correctly marked as alive.
+	fn check_alive() {
 
-		let surroundings = [Alive, Alive, Alive, Alive, Dead, Dead, Dead, Dead];
-		assert_eq!(Dead, alive_or_dead(surroundings));
+		let board = [
+			[Dead, Dead, Dead, Dead, Dead],
+			[Dead, Alive, Alive, Dead, Dead],
+			[Dead, Alive, Alive, Dead, Dead],
+			[Dead, Dead, Dead, Dead, Dead],
+			[Dead, Dead, Dead, Dead, Dead]
+		];
+
+		let status = update_status(&board, 1, 0);
+		assert_eq!(status, Alive);
+
+	}
+
+	#[test]
+	// Checks that a cell has been correctly marked as dead.
+	fn check_dead() {
+
+	    let board = [
+			[Dead, Dead, Dead, Dead, Dead],
+			[Dead, Alive, Alive, Dead, Dead],
+			[Dead, Alive, Alive, Dead, Dead],
+			[Dead, Dead, Dead, Dead, Dead],
+			[Dead, Dead, Dead, Dead, Dead]
+		];
+
+		let status = update_status(&board, 4, 4);
+		assert_eq!(status, Dead);
 
 	}
 
