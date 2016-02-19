@@ -100,9 +100,8 @@ fn update_board(board: &Board) -> Board {
 }
 
 // Generates a random cell status.
-fn random_status() -> Status {
+fn random_status<R: Rng>(rng: &mut R) -> Status {
 
-	let mut rng = thread_rng();
 	let number: u8 = rng.gen_range(0, STATUS_RATIO);
 	
 	match number {
@@ -116,10 +115,11 @@ fn random_status() -> Status {
 fn random_board() -> Board {
 
 	let mut board: Board = [[Dead; NO_COLS]; NO_ROWS];
+	let mut rng = thread_rng();
 
 	for row in 0..NO_ROWS {
 		for col in 0..NO_COLS {
-			board[row][col] = random_status();
+			board[row][col] = random_status(&mut rng);
 		}
 	}
 
@@ -128,9 +128,7 @@ fn random_board() -> Board {
 }
 
 // Generates a random color.
-fn random_colour() -> [f32; 4] {
-
-	let mut rng = thread_rng();
+fn random_colour<R: Rng>(rng: &mut R) -> [f32; 4] {
 
 	[
 		rng.gen_range::<f32>(0.0, 1.0),
@@ -144,6 +142,8 @@ fn random_colour() -> [f32; 4] {
 // Draws board on screen.
 fn draw_board(board: &Board, context: &Context, graphics: &mut G2d) {
 
+	let mut rng = thread_rng();
+
 	for row in 0..NO_ROWS {
 		for col in 0..NO_COLS {
 
@@ -152,7 +152,7 @@ fn draw_board(board: &Board, context: &Context, graphics: &mut G2d) {
 				let x = (row as f64 * CELL_WIDTH) + 1.0;
 				let y = (col as f64 * CELL_HEIGHT) + 1.0;
 
-				rectangle(random_colour(), [x, y, RECT_WIDTH, RECT_HEIGHT],
+				rectangle(random_colour(&mut rng), [x, y, RECT_WIDTH, RECT_HEIGHT],
 					context.transform, graphics);
 
 			}
