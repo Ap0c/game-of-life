@@ -9,8 +9,8 @@ use rand::{thread_rng, Rng};
 // ----- Setup ----- //
 
 // Size of the board.
-const NO_COLS: usize = 60;
-const NO_ROWS: usize = 60;
+const NO_COLS: usize = 100;
+const NO_ROWS: usize = 100;
 
 // Dimensions of the window.
 const W_WIDTH: u32 = 640;
@@ -23,7 +23,7 @@ const RECT_WIDTH: f64 = CELL_WIDTH - 2.0;
 const RECT_HEIGHT: f64 = CELL_HEIGHT - 2.0;
 
 // Framerate.
-const FPS: u64 = 2;
+const FPS: u64 = 3;
 
 // Ratio of dead-to-alive, e.g. if the ratio is 10, 1 in 10 cells will start
 // off alive.
