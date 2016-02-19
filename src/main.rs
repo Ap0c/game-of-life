@@ -11,14 +11,23 @@ use rand::{thread_rng, Rng};
 // Size of the board.
 const NO_COLS: usize = 60;
 const NO_ROWS: usize = 60;
+
+// Dimensions of the window.
 const W_WIDTH: u32 = 640;
 const W_HEIGHT: u32 = 640;
+
+// Size of a cell rectangle.
 const RECT_WIDTH: f64 = W_WIDTH as f64 / NO_COLS as f64;
 const RECT_HEIGHT: f64 = W_HEIGHT as f64 / NO_ROWS as f64;
+
+// Framerate.
 const FPS: u64 = 2;
+
 // Ratio of dead-to-alive, e.g. if the ratio is 10, 1 in 10 cells will start
 // off alive.
 const STATUS_RATIO: u8 = 20;
+
+// ----- Enums ----- //
 
 // The status of a cell.
 #[derive(PartialEq)]
@@ -30,6 +39,7 @@ enum Status {
 	Dead = 0
 }
 
+// Brings status variants into scope.
 use Status::*;
 
 // Defines the type Board as a 2D array of Status.
@@ -107,9 +117,7 @@ fn random_board() -> Board {
 
 	for row in 0..NO_ROWS {
 		for col in 0..NO_COLS {
-
 			board[row][col] = random_status();
-
 		}
 	}
 
