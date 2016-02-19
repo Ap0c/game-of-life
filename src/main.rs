@@ -1,6 +1,7 @@
 // ----- Crates ----- //
 
 extern crate piston_window;
+extern crate rand;
 use piston_window::*;
 
 
@@ -26,6 +27,20 @@ enum Status {
 }
 
 use Status::*;
+
+impl rand::Rand for Status {
+
+	fn rand<R: rand::Rng>(rng: &mut R) -> Status {
+
+	    let number: u32 = rng.gen_range(0, 2);
+	    match number {
+	        1 => Alive,
+	        _ => Dead
+	    }
+
+	}
+
+}
 
 // Defines the type Board as a 2D array of Status.
 type Board = [[Status; NO_COLS]; NO_ROWS];
