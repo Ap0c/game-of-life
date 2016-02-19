@@ -1,24 +1,15 @@
 // ----- Setup ----- //
 
-// The status of a square.
+// Size of the board.
+const NO_COLS: usize = 5;
+const NO_ROWS: usize = 5;
+
+// The status of a cell.
 #[derive(PartialEq)]
 #[derive(Debug)]
 enum Status {
 	Alive = 1,
 	Dead = 0
-}
-
-impl Status {
-
-	fn as_number(&self) -> u8 {
-
-		match *self {
-			Alive => 1,
-			Dead => 0,
-		}
-
-	}
-
 }
 
 use Status::*;
@@ -27,9 +18,9 @@ use Status::*;
 // ----- Functions ----- //
 
 // Checks the surrounding cells and returns the current cell's status.
-fn alive_or_dead(surroundings: [Status; 8]) -> Status {
+fn alive_or_dead(surroundings: &[&Status; 8]) -> Status {
 
-	let sum = surroundings.iter().filter(|cell| **cell == Alive).count();
+	let sum = surroundings.iter().filter(|cell| ***cell == Alive).count();
 
 	match sum {
 		2 | 3 => Alive,
@@ -38,12 +29,45 @@ fn alive_or_dead(surroundings: [Status; 8]) -> Status {
 
 }
 
+// Figures out what the surrounding cells are and returns the current cell's
+// status.
+fn update_status(board: &[[Status; NO_COLS]; NO_COLS], row: usize, col: usize)
+	-> Status {
+
+	let left_col = if col > 0 { col - 1 } else { NO_COLS - 1 };
+	let right_col = if col < NO_COLS - 1 { col + 1 } else { 0 };
+	let row_above = if row > 0 { row - 1 } else { NO_ROWS - 1 };
+	let row_below = if row < NO_ROWS - 1 { row + 1 } else { 0 };
+
+	alive_or_dead(&[
+		&board[row_above][left_col],
+		&board[row_above][col],
+		&board[row_above][right_col],
+		&board[row][left_col],
+		&board[row][right_col],
+		&board[row_below][left_col],
+		&board[row_below][col],
+		&board[row_below][right_col]
+	])
+
+}
+
 
 // ----- Main ----- //
 
 fn main() {
-	let status = alive_or_dead([Alive, Dead, Dead, Dead, Dead, Dead, Alive, Alive]);
-	println!("{}", status.as_number());
+
+	let board = [
+		[Dead, Dead, Dead, Dead, Dead],
+		[Dead, Alive, Alive, Dead, Dead],
+		[Dead, Alive, Alive, Dead, Dead],
+		[Dead, Dead, Dead, Dead, Dead],
+		[Dead, Dead, Dead, Dead, Dead]
+	];
+
+	let status = update_status(&board, 1, 0);
+	println!("{:?}", status);
+
 }
 
 
