@@ -127,6 +127,20 @@ fn random_board() -> Board {
 
 }
 
+// Generates a random color.
+fn random_colour() -> [f32; 4] {
+
+	let mut rng = thread_rng();
+
+	[
+		rng.gen_range::<f32>(0.0, 1.0),
+		rng.gen_range::<f32>(0.0, 1.0),
+		rng.gen_range::<f32>(0.0, 1.0),
+		1.0
+	]
+
+}
+
 // Draws board on screen.
 fn draw_board(board: &Board, context: &Context, graphics: &mut G2d) {
 
@@ -138,7 +152,7 @@ fn draw_board(board: &Board, context: &Context, graphics: &mut G2d) {
 				let x = (row as f64 * CELL_WIDTH) + 1.0;
 				let y = (col as f64 * CELL_HEIGHT) + 1.0;
 
-				rectangle([1.0, 0.0, 0.0, 1.0], [x, y, RECT_WIDTH, RECT_HEIGHT],
+				rectangle(random_colour(), [x, y, RECT_WIDTH, RECT_HEIGHT],
 					context.transform, graphics);
 
 			}
