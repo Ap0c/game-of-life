@@ -1,8 +1,18 @@
+// ----- Crates ----- //
+
+extern crate piston_window;
+use piston_window::*;
+
+
 // ----- Setup ----- //
 
 // Size of the board.
 const NO_COLS: usize = 5;
 const NO_ROWS: usize = 5;
+const W_WIDTH: u32 = 640;
+const W_HEIGHT: u32 = 640;
+const RECT_WIDTH: f64 = W_WIDTH as f64 / NO_COLS as f64;
+const RECT_HEIGHT: f64 = W_HEIGHT as f64 / NO_ROWS as f64;
 
 // The status of a cell.
 #[derive(PartialEq)]
@@ -83,6 +93,22 @@ fn main() {
 		[Dead, Dead, Dead, Dead, Dead],
 		[Dead, Dead, Dead, Dead, Dead]
 	];
+
+	let window: PistonWindow =
+		WindowSettings::new("Game Of Life", [W_WIDTH, W_HEIGHT])
+			.exit_on_esc(true).build().unwrap();
+
+	for e in window {
+
+		e.draw_2d(|c, g| {
+
+			clear([1.0; 4], g);
+			rectangle([1.0, 0.0, 0.0, 1.0], [0.0, 0.0, RECT_WIDTH, RECT_HEIGHT],
+				c.transform, g);
+
+		});
+
+	}
 
 	board = update_board(&board);
 
