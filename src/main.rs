@@ -102,15 +102,25 @@ fn main() {
 
 		e.draw_2d(|c, g| {
 
-			clear([1.0; 4], g);
-			rectangle([1.0, 0.0, 0.0, 1.0], [0.0, 0.0, RECT_WIDTH, RECT_HEIGHT],
-				c.transform, g);
+			clear([0.0; 4], g);
+			for row in 0..NO_ROWS {
+			    for col in 0..NO_COLS {
+			    	if board[row][col] == Alive {
+			    		let x = (row as f64 * RECT_WIDTH) + 1.0;
+				    	let y = (col as f64 * RECT_HEIGHT) + 1.0;
+				    	rectangle([1.0, 0.0, 0.0, 1.0],
+				    		[x, y, RECT_WIDTH - 2.0, RECT_HEIGHT - 2.0],
+							c.transform, g);
+			    	}
+			    	
+			    }
+			}
 
 		});
 
 	}
 
-	board = update_board(&board);
+	// board = update_board(&board);
 
 }
 
