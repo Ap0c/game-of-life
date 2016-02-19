@@ -128,7 +128,7 @@ fn random_board() -> Board {
 }
 
 // Draws board on screen.
-fn draw_board(board: Board, context: Context, graphics: &mut G2d) {
+fn draw_board(board: &Board, context: &Context, graphics: &mut G2d) {
 
 	for row in 0..NO_ROWS {
 		for col in 0..NO_COLS {
@@ -148,12 +148,8 @@ fn draw_board(board: Board, context: Context, graphics: &mut G2d) {
 
 }
 
-
-// ----- Main ----- //
-
-fn main() {
-
-	let mut board = random_board();
+// Launches the piston graphics.
+fn run_graphics(board: &mut Board) {
 
 	let window: PistonWindow =
 		WindowSettings::new("Game Of Life", [W_WIDTH, W_HEIGHT])
@@ -164,13 +160,23 @@ fn main() {
 		e.draw_2d(|c, g| {
 
 			clear([0.0; 4], g);
-			draw_board(board, c, g);
+			draw_board(&board, &c, g);
 			
-			board = update_board(&board);
+			*board = update_board(&board);
 
 		});
 
 	}
+
+}
+
+
+// ----- Main ----- //
+
+fn main() {
+
+	let mut board = random_board();
+	run_graphics(&mut board);
 
 }
 
