@@ -13,6 +13,7 @@ const W_WIDTH: u32 = 640;
 const W_HEIGHT: u32 = 640;
 const RECT_WIDTH: f64 = W_WIDTH as f64 / NO_COLS as f64;
 const RECT_HEIGHT: f64 = W_HEIGHT as f64 / NO_ROWS as f64;
+const FPS: u64 = 2;
 
 // The status of a cell.
 #[derive(PartialEq)]
@@ -98,11 +99,12 @@ fn main() {
 		WindowSettings::new("Game Of Life", [W_WIDTH, W_HEIGHT])
 			.exit_on_esc(true).build().unwrap();
 
-	for e in window {
+	for e in window.max_fps(FPS) {
 
 		e.draw_2d(|c, g| {
 
 			clear([0.0; 4], g);
+			println!("new frame");
 			for row in 0..NO_ROWS {
 			    for col in 0..NO_COLS {
 			    	if board[row][col] == Alive {
@@ -115,12 +117,11 @@ fn main() {
 			    	
 			    }
 			}
+			board = update_board(&board);
 
 		});
 
 	}
-
-	// board = update_board(&board);
 
 }
 
