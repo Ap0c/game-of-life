@@ -97,6 +97,7 @@ mod test {
 	use super::Status::*;
 	use super::alive_or_dead;
 	use super::update_status;
+	use super::update_board;
 
 	#[test]
 	// Checks that a cell is dead if not enough of the surroundings are alive.
@@ -150,6 +151,28 @@ mod test {
 
 		let status = update_status(&board, 4, 4);
 		assert_eq!(status, Dead);
+
+	}
+
+	#[test]
+	// Checks that the board is being updated correctly by making sure that a
+	// random selection of cells have the correct value.
+	fn check_board_update() {
+
+		let mut board = [
+			[Dead, Dead, Dead, Dead, Dead],
+			[Dead, Alive, Alive, Dead, Dead],
+			[Dead, Alive, Alive, Dead, Dead],
+			[Dead, Dead, Dead, Dead, Dead],
+			[Dead, Dead, Dead, Dead, Dead]
+		];
+
+		board = update_board(&board);
+
+		assert_eq!(board[0][1], Alive);
+		assert_eq!(board[2][2], Alive);
+		assert_eq!(board[2][3], Alive);
+		assert_eq!(board[4][2], Dead);
 
 	}
 
